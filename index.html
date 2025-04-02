@@ -43,16 +43,20 @@
             border-radius: 10px;
             padding: 20px;
             background: #1a1a2f;
-            min-height: 400px;
+            min-height: 1000px;
         }
         .active-tab {
             display: block;
         }
 
-        /* 战斗界面 */
+        /* 界面样式 */
         .combat-panel {
             display: grid;
             grid-template-columns: 2fr 1fr;
+            gap: 20px;
+        }
+
+        .role-panel {
             gap: 20px;
         }
 
@@ -80,6 +84,12 @@
             border-left: 4px solid #4a2a5a;
         }
 
+        .role-card {
+            background: #2a2a2a;
+            padding: 15px;
+            margin: 10px 0;
+        }
+
         /* 星空界面 */
         .star-map {
             display: grid;
@@ -97,7 +107,7 @@
     </style>
 </head>
 <body>
-    <h1>维度战争-星海征途</h1>
+    <h1>星际航行-维度战争</h1>
     <div class="nav-container">
         <button class="nav-button" onclick="switchTab('combat')">虚空战场</button>
         <button class="nav-button" onclick="switchTab('character')">维度行者</button>
@@ -105,7 +115,6 @@
         <button class="nav-button" onclick="switchTab('save')">存档</button>
         <button class="nav-button" onclick="switchTab('help')">帮助</button>
     </div>
-
 
     <div id="combat" class="tab-content active-tab">
         <div class="combat-panel">
@@ -115,37 +124,37 @@
                     <p>生命值: <span id="enemyHealth">10</span></p>
                     <p>最大等级: <span id="maxLevel">1</span></p>
                 </div>
-                <div class="control-group">
-                    <input type="number" id="levelInput" min="1" value="1">
-                    <button onclick="adjustEnemyLevel()">调整等级</button>
-                    <button onclick="autoAddLevel()">自动推关：开</button>
-                </div>
                 <div class="resource-display">
                     <h3>虚无黑洞：<span id="resources">0</span></h3>
                     <p>每秒伤害：<span id="dps">1</span></p>
                     <p>每秒获取：<span id="rps">0</span></p>
                 </div>
+                <div class="control-group">
+                    <input type="number" id="levelInput" min="1" value="1">
+                    <button onclick="adjustEnemyLevel()">调整等级(不超过最大等级)</button>
+                    <button onclick="autoAddLevel()">自动推关：开</button>
+                </div>
             </div>
             <div class="prestige-section">
-                <div class="prestige-box" id="prestige1Box">
+                <div class="prestige-card" id="prestige1Box">
                     <h4>维度1撕裂者 (Lv.<span class="prestigeLv">0</span>)</h4>
                     <p>要求：击败等级为<span class="prestigeReq">1</span>的敌人</p>
-                    <p>奖励：时空1撕裂者维数+1，第一次解锁时空1撕裂者</p>
+                    <p>时空1撕裂者维数+1，维度1：解锁时空1撕裂者，维度6：自动化时空1撕裂者且不消耗资源，维度11：自动化维度1撕裂者且不重置任何东西</p>
                     <button class="prestige-btn" onclick="doPrestige(1)">执行维度1撕裂</button>
                 </div>
-                <div class="prestige-box" id="prestige2Box">
+                <div class="prestige-card" id="prestige2Box">
                     <h4>维度2撕裂者 (Lv.<span class="prestigeLv">0</span>)</h4>
                     <p>要求：击败等级为<span class="prestigeReq">1</span>的敌人</p>
                     <p>奖励：时空2撕裂者维数+1，第一次解锁时空2撕裂者并自动化时空1撕裂者</p>
                     <button class="prestige-btn" onclick="doPrestige(2)">执行维度2撕裂</button>
                 </div>
-                <div class="prestige-box" id="prestige3Box">
+                <div class="prestige-card" id="prestige3Box">
                     <h4>维度3撕裂者 (Lv.<span class="prestigeLv">0</span>)</h4>
                     <p>要求：击败等级为<span class="prestigeReq">1</span>的敌人</p>
                     <p>奖励：时空3撕裂者维数+1，第一次解锁时空3撕裂者并自动化时空2撕裂者</p>
                     <button class="prestige-btn" onclick="doPrestige(3)">执行维度3撕裂</button>
                 </div>
-                <div class="prestige-box" id="prestige4Box">
+                <div class="prestige-card" id="prestige4Box">
                     <h4>维度4撕裂者 (Lv.<span class="prestigeLv">0</span>)</h4>
                     <p>要求：击败等级为<span class="prestigeReq">1</span>的敌人</p>
                     <p>奖励：时空4撕裂者维数+1，第一次解锁时空4撕裂者并自动化时空3撕裂者</p>
@@ -158,13 +167,14 @@
     <div id="character" class="tab-content">
         <div class="role-controls">
             <div class="upgrade-mode">
-                <h3>角色升级数量</h3>
+                角色升级数量
                 <button onclick="changeUpgradeMode(1)">x1</button>
                 <button onclick="changeUpgradeMode(10)">x10</button>
                 <button onclick="changeUpgradeMode(100)">x100</button>
                 <button onclick="changeUpgradeMode(1000)">x1000</button>
             </div>
             <div class="role-panel">
+                <h3>你有<span id="resources2">0</span>虚无黑洞</h3>
                 <div class="role-card" id="role1">
                     <h4>时空1撕裂者 (Lv.<span class="roleLevel">1</span>)</h4>
                     <p>效果：伤害倍率 x<span class="effectValue">1</span></p>
@@ -226,30 +236,32 @@
     </div>
 
     <div id="help" class="tab-content">
-        <!-- 存档界面内容 -->
+        <h4>帮助</h4>
+        <p>……</p>
     </div>
 
     <script>
         function E(num) { return new ExpantaNum(num); }
 
-        let game = {
-            enemyLevel: new E(1),
-            enemyHealth: new E(10),
-            maxLevel: new E(1),
-            resources: new E(0),
-            totalResources: new E(0),
+        var game = {
+            enemyLevel: E(1),
+            enemyHealth: E(10),
+            maxLevel: E(1),
+            autoLevel: true,
+            resources: E(0),
+            totalResources: E(0),
             prestige1: 0,
             prestige2: 0,
             prestige3: 0,
             prestige4: 0,
-            damageMulti: new E(1),
-            resourceMulti: new E(1),
-            enemyHealthMulti: new E(1),
-            upgradeCostMulti: new E(1),
-            stars: new E(0),
-            dps: new E(1),
-            prestigeLevels: [0, 0, 0, 0], // 四种声望等级
-            roleLevels: [new E(1), new E(1), new E(1), new E(1)], // 四种角色等级
+            damageMulti: E(1),
+            resourceMulti: E(1),
+            enemyHealthMulti: E(1),
+            upgradeCostMulti: E(1),
+            stars: E(0),
+            dps: E(1),
+            prestigeLevels: [E(1), E(1), E(1), E(1)], // 四种声望等级
+            roleLevels: [E(1), E(1), E(1), E(1)], // 四种角色等级
             roleUpgradeMode: 1
         };
 
@@ -261,7 +273,7 @@
 
         // 计算敌人生命值
         function calculateEnemyHealth(level) {
-            return new E(10).times(new E(2).pow(level.times(0.1)));
+            return E(10).times(E(2).pow(level.times(0.1)));
         }
 
         // 攻击敌人逻辑
@@ -271,7 +283,7 @@
                 // 击败敌人逻辑
                 let gain = game.enemyLevel.mul(game.resourceMulti);
                 game.resources = game.resources.add(gain);
-                game.enemyLevel = game.enemyLevel.add(1);
+                if(game.autoLevel) game.enemyLevel = game.enemyLevel.add(1);
                 game.enemyHealth = calculateEnemyHealth(game.enemyLevel).div(game.enemyHealthMulti);
                 checkPrestige();
             }
@@ -302,14 +314,14 @@
 
             if (game.enemyLevel.lt(required)) return;
 
-            game.prestigeLevels[type - 1]++;
+            game.prestigeLevels[type - 1] = game.prestigeLevels[type - 1].add(1);
             resetAfterPrestige(type);
             updatePrestigeUI();
         }
 
         function resetAfterPrestige(type) {
-            game.enemyLevel = new E(1);
-            game.roleLevels = [new E(1), new E(1), new E(1), new E(1)];
+            game.enemyLevel = E(1);
+            game.roleLevels = [E(1), E(1), E(1), E(1)];
         }
 
         // 角色升级系统
@@ -332,9 +344,9 @@
         }
 
         function calculateUpgradeCost(type, from, to) {
-            let sum = new E(0);
+            let sum = E(0);
             for (let i = from; i.lt(to); i = i.plus(1)) {
-                sum = sum.plus(new E(10).times(new E(2).pow(i.times(0.1))));
+                sum = sum.plus(E(10).times(E(2).pow(i.times(0.1))));
             }
             return sum.div(game.upgradeCostMulti);
         }
@@ -352,7 +364,7 @@
         function updatePrestigeUI() {
             for (let i = 1; i <= 4; i++) {
                 const n = game.prestigeLevels[i - 1] + 1;
-                const required = new E([10, 30, 70, 150][i - 1]).times(n).times(n);
+                const required = E([10, 30, 70, 150][i - 1]).times(n).times(n);
                 document.querySelector(`#prestige${i}Box .prestigeReq`).textContent = formatI(required);
                 document.querySelector(`#prestige${i}Box .prestigeLv`).textContent = formatI(game.prestigeLevels[i - 1]);
                 document.getElementById(`prestige${i}Box`).style.display =
@@ -383,8 +395,79 @@
             return ExpantaNum(num).toPrecision(6).replace("e+", "e");
         }
 
+        // 存档系统
+        function saveGame() {
+            localStorage.setItem('starVoyageSave', JSON.stringify(game));
+        }
+        setInterval(() => {
+            saveGame();
+        }, 10000);
+
+        function loadGame() {
+            if (!localStorage.starVoyageSave) return;
+            const loadedGame = JSON.parse(localStorage.starVoyageSave);
+            // 更新game对象
+            for (let key in game) {
+                if (loadedGame.hasOwnProperty(key)) {
+                    game[key] = loadedGame[key];
+                }
+            }
+        }
+
+        function exportSave() {
+            const saveData = JSON.stringify(game);
+            document.getElementById('saveData').value = saveData;
+        }
+
+        function importSave() {
+            const saveData = document.getElementById('saveData').value;
+            try {
+                const loadedGame = JSON.parse(saveData);
+                // 更新game对象
+                for (let key in game) {
+                    if (loadedGame.hasOwnProperty(key)) {
+                        game[key] = loadedGame[key];
+                    }
+                }
+                // 更新界面
+                updateUI();
+                updatePrestigeUI();
+                updateRoleUI();
+            } catch (e) {
+                alert('导入存档失败，请检查存档数据是否有效！');
+            }
+        }
+
+        function clearSave() {
+            // 重置game对象到初始状态
+            game.enemyLevel = E(1);
+            game.enemyHealth = E(10);
+            game.maxLevel = E(1);
+            game.resources = E(0);
+            game.totalResources = E(0);
+            game.prestige1 = 0;
+            game.prestige2 = 0;
+            game.prestige3 = 0;
+            game.prestige4 = 0;
+            game.damageMulti = E(1);
+            game.resourceMulti = E(1);
+            game.enemyHealthMulti = E(1);
+            game.upgradeCostMulti = E(1);
+            game.stars = E(0);
+            game.dps = E(1);
+            game.prestigeLevels = [0, 0, 0, 0];
+            game.roleLevels = [E(1), E(1), E(1), E(1)];
+            game.roleUpgradeMode = 1;
+
+            // 更新界面
+            updateUI();
+            updatePrestigeUI();
+            updateRoleUI();
+        }
+
         // 初始化时调用更新函数
         function init() {
+            loadGame;
             updateUI();
             updatePrestigeUI();
             updateRoleUI();
@@ -402,14 +485,7 @@
             updateRoleUI();
         }, 100);
 
-        // 存档系统
-        function saveGame() {
-            localStorage.setItem('starVoyageSave', JSON.stringify({
-                // 转换E为字符串保存...
-            }));
-        }
 
-        // 初始化界面...
     </script>
 </body>
 </html>
