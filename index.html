@@ -398,6 +398,7 @@
         // 存档系统
         function saveGame() {
             localStorage.setItem('starVoyageSave', JSON.stringify(game));
+            console.log("save_"+game.enemyLevel)
         }
         setInterval(() => {
             saveGame();
@@ -412,6 +413,7 @@
                     game[key] = loadedGame[key];
                 }
             }
+            console.log("load_" + game.enemyLevel)
         }
 
         function exportSave() {
@@ -467,11 +469,12 @@
 
         // 初始化时调用更新函数
         function init() {
-            loadGame;
+            //loadGame();
             updateUI();
             updatePrestigeUI();
             updateRoleUI();
         }
+        init();
 
         setInterval(() => {
             // 星辰资源获取 = 星尘数量 × 最大敌人等级
